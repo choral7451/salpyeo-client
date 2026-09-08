@@ -16,17 +16,18 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const vertical = resolveVertical((await params).vertical);
+  const vertical = await resolveVertical((await params).vertical);
   return { title: `${HOME_LOCATION.district} ${vertical.label}` };
 }
 
 export default async function FacilityListPage({ params, searchParams }: Props) {
   const [{ vertical: verticalParam }, { q }] = await Promise.all([params, searchParams]);
-  const vertical = resolveVertical(verticalParam);
+  const vertical = await resolveVertical(verticalParam);
 
   if (!vertical.enabled) return <ComingSoon vertical={vertical} />;
 
-  const facilities = await getFacilities(vertical.key);
+  // 검색어는 서버(API)에서 걸러 오고, 필터 칩·정렬은 클라이언트에서 처리
+  const facilities = await getFacilities(vertical.key, { q });
 
   return (
     <div className="flex-1 bg-surface-alt">

@@ -71,10 +71,29 @@ src/
 └─ types/facility.ts        # 도메인 타입
 ```
 
+## 백엔드 연동
+
+데이터는 `src/lib/api/facilities.ts` 한 곳을 통해서만 가져옵니다.
+
+| `SALPYEO_API_URL` | 동작 |
+| --- | --- |
+| 설정됨 (예: `http://localhost:4000`) | artinfo-server의 `/salpyeo/*` API 호출 (`src/lib/api/client.ts`, 응답 봉투 `{code, message, item}` 해제) |
+| 비어 있음 | `src/data/` 목데이터로 동작 (백엔드 없이 프론트만 개발할 때) |
+
+```bash
+cp .env.example .env.local      # SALPYEO_API_URL=http://localhost:4000
+
+# 백엔드 (artinfo-server) — Postgres 없이 시드 메모리로 살펴 API 만 띄우기
+cd ../artinfo-server
+SALPYEO_REPOSITORY=memory PORT=4000 npx ts-node -r tsconfig-paths/register src/salpyeo/salpyeo-standalone.ts
+```
+
+사용하는 엔드포인트: `GET /salpyeo/verticals`, `GET /salpyeo/verticals/:key`, `GET /salpyeo/facilities?vertical=&q=&slugs=&sort=`, `GET /salpyeo/facilities/:slug`. 응답 DTO 타입은 `src/lib/api/types.ts`, 프론트 모델 변환은 `src/lib/api/mappers.ts`(백엔드 `slug` → 프론트 `id`)에 있습니다. Swagger 문서는 백엔드의 `/api-docs`에서 볼 수 있습니다.
+
 ## 자주 하는 작업
 
-- **버티컬 활성화**: `src/data/verticals.ts`에서 `enabled: true`로 변경. 목데이터는 이미 `src/data/facilities/`에 있습니다.
-- **실 API 연동**: `src/lib/api/facilities.ts`의 세 함수(`getVertical`, `getFacilities`, `getFacility`) 본문만 교체하면 됩니다. 응답 타입은 `src/types/facility.ts`를 따릅니다.
+- **버티컬 활성화**: 백엔드 `src/salpyeo/facility/domain/constant/salpyeo-vertical.constant.ts`의 `enabled`를 바꾸면 프론트 탭·카드·라우트가 함께 열립니다. 목데이터 모드에서는 `src/data/verticals.ts`가 기준입니다.
+- **API 필드 추가**: 백엔드 응답 DTO → `src/lib/api/types.ts` → `src/lib/api/mappers.ts` → `src/types/facility.ts` 순서로 맞춥니다.
 - **디자인 토큰 수정**: `src/app/globals.css`의 `:root` 변수. Tailwind 클래스(`bg-primary`, `text-text-tertiary`, `border-hairline`, `rounded-3xl` 등)로 바로 사용됩니다.
 - **준비 중 기능**: 로그인, 시설 파트너, 문의, 후기 전체보기는 클릭 시 토스트로 안내합니다.
 

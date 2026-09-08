@@ -5,13 +5,13 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { VERTICALS } from "@/data/verticals";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
+import type { VerticalMeta } from "@/types/facility";
 
 const notReady = () => toast("아직 준비 중인 기능이에요");
 
-export function Header() {
+export function Header({ verticals }: { verticals: VerticalMeta[] }) {
   const params = useParams<{ vertical?: string }>();
   const activeKey = params?.vertical;
 
@@ -26,7 +26,7 @@ export function Header() {
         </Link>
 
         <nav aria-label="시설 종류" className="flex flex-1 gap-1 overflow-x-auto">
-          {VERTICALS.map((v) => {
+          {verticals.map((v) => {
             const isActive = v.enabled && activeKey === v.key;
             const base =
               "shrink-0 rounded-md px-3.5 py-2 text-[15px] transition-colors duration-150";

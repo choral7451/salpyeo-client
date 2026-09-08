@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { VerticalIcon } from "@/components/common/vertical-icon";
-import { VERTICALS } from "@/data/verticals";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import type { VerticalMeta } from "@/types/facility";
@@ -56,10 +55,10 @@ function VerticalCard({ vertical }: { vertical: VerticalMeta }) {
   );
 }
 
-export function VerticalGrid() {
+export function VerticalGrid({ verticals }: { verticals: VerticalMeta[] }) {
   return (
     <section className="grid grid-cols-[repeat(auto-fit,minmax(196px,1fr))] gap-3.5">
-      {VERTICALS.map((v) => (
+      {verticals.map((v) => (
         <VerticalCard key={v.key} vertical={v} />
       ))}
     </section>

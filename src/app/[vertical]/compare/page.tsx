@@ -14,12 +14,12 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const vertical = resolveVertical((await params).vertical);
+  const vertical = await resolveVertical((await params).vertical);
   return { title: `${vertical.label} 비교 리포트` };
 }
 
 export default async function ComparePage({ params }: Props) {
-  const vertical = resolveVertical((await params).vertical);
+  const vertical = await resolveVertical((await params).vertical);
   if (!vertical.enabled) redirect(routes.list(vertical.key));
 
   const facilities = await getFacilities(vertical.key);

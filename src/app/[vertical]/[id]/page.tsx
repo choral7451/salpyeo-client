@@ -7,29 +7,33 @@ import { FacilityHeaderCard } from "@/components/detail/facility-header-card";
 import { InspectionList } from "@/components/detail/inspection-list";
 import { PriceTable } from "@/components/detail/price-table";
 import { ReviewCard } from "@/components/detail/review-card";
-import { getFacilities, getFacility } from "@/lib/api/facilities";
+import { getFacilities, getFacility, getVerticals } from "@/lib/api/facilities";
 import { routes } from "@/lib/routes";
 import { resolveVertical } from "@/lib/vertical-params";
-import { VERTICALS } from "@/data/verticals";
 
 type Props = { params: Promise<{ vertical: string; id: string }> };
 
 export async function generateStaticParams() {
-  const enabled = VERTICALS.filter((v) => v.enabled);
-  const lists = await Promise.all(enabled.map((v) => getFacilities(v.key)));
-  return lists.flat().map((f) => ({ vertical: f.vertical, id: f.id }));
+  // 빌드 시 API 가 꺼져 있어도 빌드가 깨지지 않도록 — 실패하면 요청 시 렌더링으로 대체
+  try {
+    const verticals = (await getVerticals()).filter((v) => v.enabled);
+    const lists = await Promise.all(verticals.map((v) => getFacilities(v.key)));
+    return lists.flat().map((f) => ({ vertical: f.vertical, id: f.id }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { vertical: verticalParam, id } = await params;
-  const vertical = resolveVertical(verticalParam);
+  const vertical = await resolveVertical(verticalParam);
   const facility = vertical.enabled ? await getFacility(vertical.key, id) : null;
   return { title: facility?.name ?? vertical.label };
 }
 
 export default async function FacilityDetailPage({ params }: Props) {
   const { vertical: verticalParam, id } = await params;
-  const vertical = resolveVertical(verticalParam);
+  const vertical = await resolveVertical(verticalParam);
 
   if (!vertical.enabled) redirect(routes.list(vertical.key));
 

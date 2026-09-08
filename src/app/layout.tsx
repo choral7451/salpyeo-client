@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { StoreHydrator } from "@/components/common/store-hydrator";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { getVerticals } from "@/lib/api/facilities";
 
 import "./globals.css";
 
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
 const PRETENDARD_CSS =
   "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const verticals = await getVerticals();
   return (
     <html lang="ko" className="h-full">
       <head>
@@ -28,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex min-h-full flex-col">
         <StoreHydrator />
-        <Header />
+        <Header verticals={verticals} />
         <main className="flex flex-1 flex-col">{children}</main>
         <Footer />
         <Toaster position="bottom-center" richColors closeButton />
