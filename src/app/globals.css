@@ -1,26 +1,153 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/* ------------------------------------------------------------------
+ * 살펴 디자인 토큰 (design_handoff_salpyeo/README.md 기준)
+ * ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand */
+  --primary: #3182f6;
+  --primary-hover: #1b64da;
+  --primary-tint: #e8f3ff;
+  --primary-tint-border: #c9dffc;
+  --primary-tint-hover: #f5faff;
+
+  /* Text */
+  --text: #191f28;
+  --text-body: #333d4b;
+  --text-secondary: #4e5968;
+  --text-tertiary: #6d7684;
+  --text-muted: #8b95a1;
+  --text-disabled: #b0b8c1;
+
+  /* Surface & line */
+  --surface: #ffffff;
+  --surface-alt: #f9fafb;
+  --placeholder: #e8ebef;
+  --line: #e5e8eb;
+  --hairline: #f2f4f6;
+  --check-border: #d1d6db;
+
+  /* Semantic */
+  --positive: #059c62;
+  --positive-tint: #e7f6ee;
+
+  /* Dark surface (AI 요약, 비교 바) */
+  --dark: #191f28;
+  --dark-on-blue: #8fb8ff;
+  --dark-body: #e5e8eb;
+
+  /* shadcn/ui 호환 토큰 */
+  --background: var(--surface);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary-foreground: #ffffff;
+  --secondary: var(--hairline);
+  --secondary-foreground: var(--text-secondary);
+  --muted: var(--hairline);
+  --muted-foreground: var(--text-tertiary);
+  --accent: var(--primary-tint);
+  --accent-foreground: var(--primary-hover);
+  --destructive: #f04452;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--primary);
+  --radius: 0.75rem;
 }
 
 @theme inline {
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR",
+    sans-serif;
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-tint: var(--primary-tint);
+  --color-primary-tint-border: var(--primary-tint-border);
+  --color-primary-tint-hover: var(--primary-tint-hover);
+
+  --color-text: var(--text);
+  --color-text-body: var(--text-body);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-placeholder: var(--placeholder);
+  --color-line: var(--line);
+  --color-hairline: var(--hairline);
+  --color-check-border: var(--check-border);
+
+  --color-positive: var(--positive);
+  --color-positive-tint: var(--positive-tint);
+
+  --color-dark: var(--dark);
+  --color-dark-on-blue: var(--dark-on-blue);
+  --color-dark-body: var(--dark-body);
+
+  /* shadcn/ui */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+
+  --shadow-search: 0 8px 28px rgba(49, 130, 246, 0.12);
+  --shadow-card-hover: 0 6px 20px rgba(0, 0, 0, 0.05);
+  --shadow-floating: 0 8px 24px rgba(49, 104, 240, 0.35);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 1120px 콘텐츠 컨테이너 */
+@utility container-page {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* 숫자·가격 정렬 */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    @apply font-sans antialiased;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
