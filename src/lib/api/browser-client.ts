@@ -36,10 +36,13 @@ let refreshPromise: Promise<boolean> | null = null;
 
 function doFetch(path: string, init?: RequestInit): Promise<Response> {
   const tokens = getTokens();
+  // multipart 는 브라우저가 boundary 까지 붙여야 하므로 Content-Type 을 우리가 정하면 안 된다
+  const isFormData = typeof FormData !== "undefined" && init?.body instanceof FormData;
+
   return fetch(`${BROWSER_API_BASE_URL}${path}`, {
     ...init,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       Accept: "application/json",
       ...(tokens ? { Authorization: `Bearer ${tokens.accessToken}` } : {}),
       ...init?.headers,

@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminGate } from "@/components/admin/admin-gate";
@@ -11,8 +13,10 @@ import { Button } from "@/components/ui/button";
 import {
   fetchAdminFacility,
   updateAdminFacility,
+  uploadAdminFacilityImage,
   type AdminFacility,
   type AdminFacilityPatch,
+  type AdminImage,
 } from "@/lib/api/admin";
 import { routes } from "@/lib/routes";
 
@@ -60,6 +64,8 @@ function AdminFacilityEditor() {
   const [draft, setDraft] = useState<AdminFacility | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -82,6 +88,26 @@ function AdminFacilityEditor() {
     (patch: Partial<AdminFacility>) => setDraft((d) => (d ? { ...d, ...patch } : d)),
     [],
   );
+
+  const uploadImages = async (files: FileList | null) => {
+    if (!files?.length || !draft) return;
+
+    setUploading(true);
+    try {
+      const uploaded: AdminImage[] = [];
+      // 한 장씩 순서대로 — 실패한 장이 있어도 앞서 올라간 것은 목록에 남는다
+      for (const file of Array.from(files)) {
+        uploaded.push(await uploadAdminFacilityImage(draft.slug, file));
+      }
+      update({ images: [...draft.images, ...uploaded] });
+      toast.success(`${uploaded.length}장 올렸습니다 — 저장을 눌러야 반영됩니다`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "업로드에 실패했습니다");
+    } finally {
+      setUploading(false);
+      if (fileInput.current) fileInput.current.value = "";
+    }
+  };
 
   const save = async () => {
     if (!original || !draft) return;
@@ -215,15 +241,48 @@ function AdminFacilityEditor() {
           />
         </section>
 
-        <section className="rounded-2xl border border-hairline bg-surface p-5">
+        <section className="flex flex-col gap-4 rounded-2xl border border-hairline bg-surface p-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              ref={fileInput}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              onChange={(e) => void uploadImages(e.target.files)}
+              className="hidden"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fileInput.current?.click()}
+              disabled={uploading}
+            >
+              <ImagePlus size={15} strokeWidth={2.2} aria-hidden />
+              {uploading ? "올리는 중…" : "사진 올리기"}
+            </Button>
+            <span className="text-[11px] text-text-muted">
+              jpg · png · webp, 한 장당 10MB까지. 올린 뒤 저장을 눌러야 반영됩니다
+            </span>
+          </div>
+
           <RowList
             label="사진"
-            hint="조리원 홈페이지의 이미지 URL 을 그대로 참조합니다 (재호스팅 없음)"
+            hint="올린 사진은 우리 S3, 예전 사진은 조리원 홈페이지 URL 을 그대로 참조합니다"
             rows={draft.images}
             onChange={(images) => update({ images })}
             makeEmpty={() => ({ url: "", alt: "", width: 0, height: 0 })}
             renderRow={(row, updateRow) => (
               <>
+                {row.url ? (
+                  <Image
+                    src={row.url}
+                    alt=""
+                    width={56}
+                    height={42}
+                    unoptimized
+                    className="h-[42px] w-14 shrink-0 rounded-md border border-hairline object-cover"
+                  />
+                ) : null}
                 <input
                   aria-label="이미지 URL"
                   value={row.url}

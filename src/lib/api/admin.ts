@@ -56,6 +56,17 @@ export function fetchAdminFacility(slug: string): Promise<AdminFacility> {
   return browserRequest<AdminFacility>(`/salpyeo/admin/facilities/${encodeURIComponent(slug)}`);
 }
 
+/** 시설 사진 업로드 — S3 공개 URL 을 돌려준다. 시설 반영은 저장(PUT)에서 한다 */
+export function uploadAdminFacilityImage(slug: string, file: File): Promise<AdminImage> {
+  const form = new FormData();
+  form.append("imageFile", file);
+
+  return browserRequest<AdminImage>(`/salpyeo/admin/facilities/${encodeURIComponent(slug)}/images`, {
+    method: "POST",
+    body: form,
+  });
+}
+
 export function updateAdminFacility(slug: string, patch: AdminFacilityPatch): Promise<AdminFacility> {
   return browserRequest<AdminFacility>(`/salpyeo/admin/facilities/${encodeURIComponent(slug)}`, {
     method: "PUT",
