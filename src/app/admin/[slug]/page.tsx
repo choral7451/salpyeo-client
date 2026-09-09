@@ -39,6 +39,7 @@ function diffPatch(original: AdminFacility, draft: AdminFacility): AdminFacility
     "operatorType",
     "address",
     "phone",
+    "website",
     "inspectionBadge",
     "featureBadge",
     "price",
@@ -182,6 +183,14 @@ function AdminFacilityEditor() {
               label="주소"
               value={draft.address}
               onChange={(address) => update({ address })}
+              className="sm:col-span-2"
+            />
+            <TextField
+              label="공식 홈페이지"
+              value={draft.website}
+              onChange={(website) => update({ website })}
+              placeholder="https://…"
+              hint="비워 두면 상세에 표시되지 않습니다"
               className="sm:col-span-2"
             />
             <NumberField

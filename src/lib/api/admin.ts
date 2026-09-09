@@ -30,6 +30,7 @@ export interface AdminFacility {
   operatorType: string;
   address: string;
   phone: string;
+  website: string;
   inspectionBadge: string;
   featureBadge: string;
   price: number;
