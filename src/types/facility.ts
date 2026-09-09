@@ -73,6 +73,8 @@ export interface Facility {
   operator: string;
   address: string;
   phone: string;
+  /** 공식 홈페이지. 못 찾았으면 "" */
+  website: string;
   /** 시설 사진. 첫 번째가 대표 사진(목록 썸네일). 아직 없으면 [] */
   images: FacilityImage[];
   /** 사용자 위치 기준 거리. 위치 기능 전에는 label "" / minutes 0 (미정) */

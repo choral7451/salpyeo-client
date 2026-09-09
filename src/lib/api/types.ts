@@ -22,6 +22,7 @@ export interface FacilityDto {
   operator: string;
   address: string;
   phone: string;
+  website: string;
   distance: { label: string; minutes: number };
   badges: { inspection: string; feature: string };
   price: number;

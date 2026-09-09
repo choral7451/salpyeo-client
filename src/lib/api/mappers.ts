@@ -27,6 +27,7 @@ export function toFacility(dto: FacilityDto): Facility {
     operator: dto.operator ?? "",
     address: dto.address ?? "",
     phone: dto.phone ?? "",
+    website: dto.website ?? "",
     images: dto.images,
     distance: dto.distance,
     badges: dto.badges,

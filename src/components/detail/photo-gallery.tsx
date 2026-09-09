@@ -17,6 +17,7 @@ export function PhotoGallery({
   name,
   className,
 }: {
+  /** 시설 공식 홈페이지에서 가져온 사진. 없으면 플레이스홀더 */
   images: FacilityImage[];
   name: string;
   className?: string;
