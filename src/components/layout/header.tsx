@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
+import { AuthMenu } from "@/components/layout/auth-menu";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -69,10 +70,10 @@ export function Header({ verticals }: { verticals: VerticalMeta[] }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          {/* 로그인은 우선 제공하지 않음 (2026-09 결정). 필요해지면 여기 primary 버튼으로 추가 */}
           <Button variant="ghost" size="sm" onClick={notReady} className="px-3">
             시설 파트너
           </Button>
+          <AuthMenu />
         </div>
       </div>
     </header>
