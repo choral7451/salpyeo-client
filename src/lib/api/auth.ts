@@ -2,12 +2,16 @@ import { browserPost, browserRequest, BROWSER_API_BASE_URL } from "@/lib/api/bro
 import { getGoogleAccessToken, GOOGLE_CLIENT_ID } from "@/lib/api/google";
 import { clearTokens, saveTokens, type AuthTokens } from "@/lib/api/token";
 
+export type UserRole = "USER" | "ADMIN";
+
 export interface AuthUser {
   id: string;
   name: string;
   provider: string;
   email: string | null;
   avatarUrl: string | null;
+  /** 관리자 승격은 백엔드 DB 에서 직접 한다 */
+  role: UserRole;
 }
 
 interface LoginResponse {

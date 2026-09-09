@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { DropdownMenu } from "radix-ui";
-import { LogOut } from "lucide-react";
+import { LogOut, Wrench } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { isLoginEnabled, signInWithGoogle } from "@/lib/api/auth";
 import { GoogleSignInCancelled } from "@/lib/api/google";
+import { routes } from "@/lib/routes";
 import { useSessionStore } from "@/stores/session-store";
 
 function GoogleMark() {
@@ -94,6 +96,17 @@ export function AuthMenu() {
             )}
           </div>
           <DropdownMenu.Separator className="my-1 h-px bg-hairline" />
+          {user.role === "ADMIN" ? (
+            <DropdownMenu.Item asChild>
+              <Link
+                href={routes.admin()}
+                className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-text-secondary outline-none data-[highlighted]:bg-hairline"
+              >
+                <Wrench size={15} strokeWidth={2.2} aria-hidden />
+                시설 관리
+              </Link>
+            </DropdownMenu.Item>
+          ) : null}
           <DropdownMenu.Item
             onSelect={() => {
               signOut();
