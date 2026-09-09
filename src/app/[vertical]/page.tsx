@@ -7,10 +7,7 @@ import { getFacilities } from "@/lib/api/facilities";
 import { formatAsOf } from "@/lib/format";
 import { resolveVertical, verticalStaticParams } from "@/lib/vertical-params";
 
-type Props = {
-  params: Promise<{ vertical: string }>;
-  searchParams: Promise<{ q?: string }>;
-};
+type Props = { params: Promise<{ vertical: string }> };
 
 export function generateStaticParams() {
   return verticalStaticParams();
@@ -21,14 +18,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${SERVICE_REGION.label} ${vertical.label}` };
 }
 
-export default async function FacilityListPage({ params, searchParams }: Props) {
-  const [{ vertical: verticalParam }, { q }] = await Promise.all([params, searchParams]);
+export default async function FacilityListPage({ params }: Props) {
+  const { vertical: verticalParam } = await params;
   const vertical = await resolveVertical(verticalParam);
 
   if (!vertical.enabled) return <ComingSoon vertical={vertical} />;
 
-  // 검색어는 서버(API)에서 걸러 오고, 필터 칩·정렬은 클라이언트에서 처리
-  const facilities = await getFacilities(vertical.key, { q });
+  // 전체를 한 번에 받아 검색·지역·정렬은 클라이언트에서 처리한다 (지역 옵션과 개수가 검색어에 흔들리지 않도록)
+  const facilities = await getFacilities(vertical.key);
 
   return (
     <div className="flex-1 bg-surface-alt">
@@ -41,13 +38,8 @@ export default async function FacilityListPage({ params, searchParams }: Props) 
             {vertical.count}곳 · {vertical.source}
             {vertical.asOf ? ` · ${formatAsOf(vertical.asOf)} 기준` : null}
           </span>
-          {q ? (
-            <span className="text-[15px] text-text-muted">
-              “{q}” 검색 결과
-            </span>
-          ) : null}
         </div>
-        <FacilityListView vertical={vertical} facilities={facilities} query={q} />
+        <FacilityListView vertical={vertical} facilities={facilities} />
       </div>
     </div>
   );
