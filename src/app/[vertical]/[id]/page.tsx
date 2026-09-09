@@ -51,6 +51,8 @@ export default async function FacilityDetailPage({ params }: Props) {
             <PriceTable
               rows={facility.priceRows}
               source={vertical.source}
+              asOf={vertical.asOf}
+              regionLabel={facility.region.sido}
               vsAvgPercent={facility.vsAvgPercent}
             />
             <InspectionList inspections={facility.inspections} />

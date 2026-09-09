@@ -41,7 +41,11 @@ export function FacilityListView({
     const compare = SORTS.find((s) => s.key === sort)?.compare;
     return facilities
       .filter((f) => predicates.every((p) => p(f)))
-      .filter((f) => !q || f.name.toLowerCase().includes(q) || f.meta.toLowerCase().includes(q))
+      .filter(
+        (f) =>
+          !q ||
+          [f.name, f.meta, f.address].some((v) => v.toLowerCase().includes(q)),
+      )
       .sort(compare);
   }, [facilities, activeFilters, query, sort]);
 

@@ -7,6 +7,11 @@ export function InspectionList({ inspections }: { inspections: Inspection[] }) {
   return (
     <Card className="p-6">
       <CardTitle>공식 점검·평가</CardTitle>
+      {inspections.length === 0 ? (
+        <p className="mt-3.5 rounded-xl bg-surface-alt px-[18px] py-4 text-sm text-text-tertiary">
+          공개된 점검·평가 결과가 아직 없어요. 보건소 점검 결과를 연동하면 여기에 표시돼요.
+        </p>
+      ) : null}
       <ul className="mt-3.5 flex flex-col gap-2">
         {inspections.map((i) => (
           <li

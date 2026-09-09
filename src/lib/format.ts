@@ -18,6 +18,22 @@ export function formatVsAvg(percent: number): string {
   return percent < 0 ? `${Math.abs(percent)}% 저렴` : `${percent}% 비쌈`;
 }
 
+/** 대표 가격. 0 은 미공개 */
+export function formatPrice(amount: number): string {
+  return amount > 0 ? formatWon(amount) : "요금 미공개";
+}
+
+/** "인증 후기 4.6 · 128건", 후기가 없으면 "인증 후기 아직 없음" */
+export function formatReviewSummary(rating: number, reviewCount: number): string {
+  if (reviewCount === 0) return "인증 후기 아직 없음";
+  return `인증 후기 ${formatRating(rating)} · ${reviewCount}건`;
+}
+
+/** 데이터 기준일 "2023-12-31" → "2023.12.31" */
+export function formatAsOf(asOf: string): string {
+  return asOf.replace(/-/g, ".");
+}
+
 /** 평점을 소수 한 자리로 고정 */
 export function formatRating(rating: number): string {
   return rating.toFixed(1);

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { FACILITIES_BY_VERTICAL } from "@/data/facilities";
 import { VERTICAL_MAP, VERTICALS } from "@/data/verticals";
 import type { Facility, VerticalKey, VerticalMeta } from "@/types/facility";
 import { isVerticalKey } from "@/types/facility";
@@ -12,7 +11,7 @@ import type { FacilityDto, FacilitySort, VerticalDto } from "./types";
 /**
  * 데이터 접근 계층.
  * - `SALPYEO_API_URL` 이 설정되면 artinfo-server `/salpyeo/*` 를 호출
- * - 없으면 `src/data` 목데이터로 동작 (백엔드 없이 프론트만 띄울 때)
+ * - 없으면 버티컬 메타(코드 상수)만 있고 시설 목록은 비어 있다 — 시설 데이터는 백엔드(공공데이터 시드)가 유일한 원천
  * 화면 코드는 이 파일의 함수만 알고, 어디서 오는지는 몰라도 된다.
  */
 
@@ -45,7 +44,7 @@ export async function getFacilities(
   vertical: VerticalKey,
   options: FacilityListOptions = {},
 ): Promise<Facility[]> {
-  if (!isApiEnabled) return FACILITIES_BY_VERTICAL[vertical];
+  if (!isApiEnabled) return [];
   const { facilities } = await apiGet<{ facilities: FacilityDto[] }>("/salpyeo/facilities", {
     vertical,
     q: options.q,
@@ -56,7 +55,7 @@ export async function getFacilities(
 }
 
 export async function getFacility(vertical: VerticalKey, id: string): Promise<Facility | null> {
-  if (!isApiEnabled) return FACILITIES_BY_VERTICAL[vertical].find((f) => f.id === id) ?? null;
+  if (!isApiEnabled) return null;
   try {
     const facility = toFacility(await apiGet<FacilityDto>(`/salpyeo/facilities/${encodeURIComponent(id)}`));
     // 다른 버티컬의 slug 로 들어오면 없는 것으로 처리 (URL 과 데이터 불일치 방지)

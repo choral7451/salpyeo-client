@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { DEFAULT_VERTICAL, HOME_LOCATION } from "@/data/verticals";
+import { DEFAULT_VERTICAL, SERVICE_REGION } from "@/data/verticals";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
@@ -30,9 +30,9 @@ export function SearchBar({ className }: { className?: string }) {
       <button
         type="button"
         className="flex shrink-0 items-center gap-1 text-[15px] font-bold text-text"
-        aria-label={`지역 선택: ${HOME_LOCATION.full}`}
+        aria-label={`지역 선택: ${SERVICE_REGION.label}`}
       >
-        {HOME_LOCATION.full}
+        {SERVICE_REGION.label}
         <ChevronDown size={13} strokeWidth={2.5} className="text-text-muted" aria-hidden />
       </button>
       <div aria-hidden className="h-[22px] w-px shrink-0 bg-line" />
@@ -41,7 +41,7 @@ export function SearchBar({ className }: { className?: string }) {
         name="q"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="시설 이름이나 종류로 검색"
+        placeholder="시설 이름·지역·주소로 검색"
         aria-label="시설 검색"
         className="min-w-0 flex-1 bg-transparent text-base text-text outline-none placeholder:text-text-muted"
       />

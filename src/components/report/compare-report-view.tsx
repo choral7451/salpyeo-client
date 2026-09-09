@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { HOME_LOCATION } from "@/data/verticals";
 import { useCompare } from "@/hooks/use-compare";
 import { buildCompareReport } from "@/lib/compare";
 import { routes } from "@/lib/routes";
@@ -39,7 +38,7 @@ export function CompareReportView({
         className="mt-4"
         icon={<Scale size={26} />}
         title="비교할 시설을 2곳 이상 담아 주세요"
-        description={`${vertical.label} 목록에서 비교함에 담으면 우리 집 기준 리포트를 만들어 드려요.`}
+        description={`${vertical.label} 목록에서 비교함에 담으면 비교 리포트를 만들어 드려요.`}
         action={
           <Button asChild>
             <Link href={routes.list(vertical.key)}>{vertical.label} 목록으로</Link>
@@ -61,12 +60,12 @@ export function CompareReportView({
   return (
     <div className="mt-4 flex flex-col gap-3.5">
       <Card className="p-6">
-        <div className="text-[13px] font-bold text-primary">우리 집 기준 비교 리포트</div>
+        <div className="text-[13px] font-bold text-primary">비교 리포트</div>
         <h1 className="mt-1.5 text-2xl font-extrabold tracking-[-0.5px] text-text">
-          {HOME_LOCATION.full} 자택 기준 · {vertical.label} {selected.length}곳
+          {vertical.label} {selected.length}곳 비교
         </h1>
         <p className="mt-1.5 text-sm text-text-tertiary">
-          공개 요금, 공식 점검·평가, 인증 후기를 반영했어요.
+          {vertical.source} 공개 요금을 기준으로 정리했어요.
         </p>
       </Card>
 

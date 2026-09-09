@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Thumbnail } from "@/components/common/thumbnail";
 import { Badge } from "@/components/ui/badge";
-import { formatRating, formatWon } from "@/lib/format";
+import { formatPrice, formatReviewSummary } from "@/lib/format";
 import { routes } from "@/lib/routes";
 import type { Facility } from "@/types/facility";
 
@@ -50,8 +50,12 @@ export function FacilityCard({
           </h3>
           <p className="mt-[3px] text-[13px] text-text-tertiary">{facility.meta}</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
-            <Badge variant="positive">{facility.badges.inspection}</Badge>
-            <Badge variant="primary">{facility.badges.feature}</Badge>
+            {facility.badges.inspection ? (
+              <Badge variant="positive">{facility.badges.inspection}</Badge>
+            ) : null}
+            {facility.badges.feature ? (
+              <Badge variant="primary">{facility.badges.feature}</Badge>
+            ) : null}
           </div>
         </div>
         <CompareCheckbox
@@ -65,15 +69,17 @@ export function FacilityCard({
       <div className="flex items-center justify-between rounded-lg bg-surface-alt px-4 py-3">
         <span className="text-[13px] text-text-tertiary">{priceLabel}</span>
         <span className="tabular text-lg font-extrabold text-text">
-          {formatWon(facility.price)}
+          {formatPrice(facility.price)}
         </span>
       </div>
 
       <div className="flex items-center justify-between text-[13px]">
         <span className="font-semibold text-text-secondary">
-          인증 후기 {formatRating(facility.rating)} · {facility.reviewCount}건
+          {formatReviewSummary(facility.rating, facility.reviewCount)}
         </span>
-        <span className="text-text-muted">집에서 {facility.distance.label}</span>
+        {facility.distance.label ? (
+          <span className="text-text-muted">집에서 {facility.distance.label}</span>
+        ) : null}
       </div>
     </article>
   );

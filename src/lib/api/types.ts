@@ -8,6 +8,7 @@ export interface VerticalDto {
   sub: string;
   priceLabel: string;
   source: string;
+  asOf: string | null;
   count: number;
   enabled: boolean;
 }
@@ -17,6 +18,10 @@ export interface FacilityDto {
   vertical: VerticalKey;
   name: string;
   meta: string;
+  region: { sido: string; sigungu: string };
+  operator: string;
+  address: string;
+  phone: string;
   distance: { label: string; minutes: number };
   badges: { inspection: string; feature: string };
   price: number;

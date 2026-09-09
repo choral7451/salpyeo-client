@@ -11,15 +11,24 @@ export interface FilterDef {
   predicate: (f: Facility) => boolean;
 }
 
+/**
+ * 공공데이터에 없는 값은 빈 값(price 0 / inspections [] / distance.minutes 0)으로 오므로
+ * 각 필터는 "값이 있고 조건을 만족" 할 때만 통과시킨다.
+ */
 export const FILTERS: FilterDef[] = [
-  { key: "priceDisclosed", label: "가격 공개 시설만", predicate: () => true },
+  { key: "priceDisclosed", label: "가격 공개 시설만", predicate: (f) => f.price > 0 },
   {
     key: "noIssue",
     label: "점검 지적 없음",
-    predicate: (f) => f.inspections.every((i) => i.result === "지적 없음"),
+    predicate: (f) =>
+      f.inspections.length > 0 && f.inspections.every((i) => i.result === "지적 없음"),
   },
   { key: "reviews10", label: "인증 후기 10건 이상", predicate: (f) => f.reviewCount >= 10 },
-  { key: "within15", label: "집에서 15분 이내", predicate: (f) => f.distance.minutes <= 15 },
+  {
+    key: "within15",
+    label: "집에서 15분 이내",
+    predicate: (f) => f.distance.minutes > 0 && f.distance.minutes <= 15,
+  },
 ];
 
 export function FilterChips({

@@ -19,8 +19,14 @@ function VerticalCard({ vertical }: { vertical: VerticalMeta }) {
         </div>
       </div>
       <div className="mt-auto flex items-center gap-1 text-[13px] font-bold text-primary">
-        {vertical.count}곳 살펴보기
-        <ChevronRight size={13} strokeWidth={2.5} aria-hidden />
+        {vertical.enabled ? (
+          <>
+            {vertical.count}곳 살펴보기
+            <ChevronRight size={13} strokeWidth={2.5} aria-hidden />
+          </>
+        ) : (
+          <span className="text-text-muted">데이터 연동 준비 중</span>
+        )}
       </div>
     </>
   );

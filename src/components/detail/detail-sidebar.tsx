@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCompare } from "@/hooks/use-compare";
-import { formatWon } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import type { Facility } from "@/types/facility";
 
 export function DetailSidebar({
@@ -24,7 +24,7 @@ export function DetailSidebar({
       <Card className="p-6">
         <div className="text-[13px] text-text-tertiary">{priceLabel}</div>
         <div className="tabular mt-1 text-[28px] font-extrabold text-text">
-          {formatWon(facility.price)}
+          {formatPrice(facility.price)}
         </div>
         <Button
           size="block"

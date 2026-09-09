@@ -21,9 +21,11 @@ export interface VerticalMeta {
   sub: string;
   /** 가격 기준 문구 — 버티컬마다 다름 (예: 2주 일반실) */
   priceLabel: string;
-  /** 데이터 출처 (예: 모자보건법 요금 공개) */
+  /** 데이터 출처 (예: 보건복지부 전국 산후조리원 현황) */
   source: string;
-  /** 지역 내 시설 수 */
+  /** 데이터 기준일 (YYYY-MM-DD). 연동 전이면 null */
+  asOf: string | null;
+  /** 시설 수 */
   count: number;
   /** false면 UI에 노출되지만 진입 불가 (준비 중) */
   enabled: boolean;
@@ -61,27 +63,38 @@ export interface Facility {
   id: string;
   vertical: VerticalKey;
   name: string;
-  /** 위치 요약 (예: 정자역 도보 6분) */
+  /** 위치 요약 (예: 서울 종로구) */
   meta: string;
-  /** 시설 사진. 첫 번째가 대표 사진(목록 썸네일) */
+  region: {
+    sido: string;
+    sigungu: string;
+  };
+  /** 운영주체 (민간 / 지자체) */
+  operator: string;
+  address: string;
+  phone: string;
+  /** 시설 사진. 첫 번째가 대표 사진(목록 썸네일). 아직 없으면 [] */
   images: FacilityImage[];
+  /** 사용자 위치 기준 거리. 위치 기능 전에는 label "" / minutes 0 (미정) */
   distance: {
     label: string;
     minutes: number;
   };
   badges: {
-    /** 점검·평가 배지 (초록) */
+    /** 점검·평가 배지 (초록). 점검 데이터 연동 전에는 "" */
     inspection: string;
     /** 특성 배지 (파랑) */
     feature: string;
   };
-  /** 대표 가격 (원 단위) — 정렬·비교 계산에 사용 */
+  /** 대표 가격 (원 단위) — 정렬·비교 계산에 사용. 0 = 미공개 */
   price: number;
+  /** 후기 연동 전에는 0 */
   rating: number;
   reviewCount: number;
-  /** 지역 평균 대비 %. 음수 = 저렴, 양수 = 비쌈, 0 = 평균 수준 */
+  /** 같은 시도 평균 대비 %. 음수 = 저렴, 양수 = 비쌈, 0 = 평균 수준(또는 미공개) */
   vsAvgPercent: number;
   priceRows: PriceRow[];
   inspections: Inspection[];
-  review: Review;
+  /** 대표 후기. 아직 없으면 null */
+  review: Review | null;
 }

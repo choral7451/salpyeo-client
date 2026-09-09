@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 
 import { ComingSoon } from "@/components/common/coming-soon";
 import { FacilityListView } from "@/components/facility/facility-list-view";
-import { HOME_LOCATION } from "@/data/verticals";
+import { SERVICE_REGION } from "@/data/verticals";
 import { getFacilities } from "@/lib/api/facilities";
+import { formatAsOf } from "@/lib/format";
 import { resolveVertical, verticalStaticParams } from "@/lib/vertical-params";
 
 type Props = {
@@ -17,7 +18,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const vertical = await resolveVertical((await params).vertical);
-  return { title: `${HOME_LOCATION.district} ${vertical.label}` };
+  return { title: `${SERVICE_REGION.label} ${vertical.label}` };
 }
 
 export default async function FacilityListPage({ params, searchParams }: Props) {
@@ -34,10 +35,11 @@ export default async function FacilityListPage({ params, searchParams }: Props) 
       <div className="container-page pt-8 pb-[140px]">
         <div className="flex flex-wrap items-baseline gap-3">
           <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-text">
-            {HOME_LOCATION.district} {vertical.label}
+            {SERVICE_REGION.label} {vertical.label}
           </h1>
           <span className="text-[15px] text-text-tertiary">
             {vertical.count}곳 · {vertical.source}
+            {vertical.asOf ? ` · ${formatAsOf(vertical.asOf)} 기준` : null}
           </span>
           {q ? (
             <span className="text-[15px] text-text-muted">
