@@ -3,7 +3,7 @@
  * 공개 응답과 달리 저장된 컬럼을 그대로 주고받는다 — 편집 폼에 그대로 채우기 위해서다.
  * 관리자가 아니면 서버가 403 SALPYEO-ADMIN-001 로 막는다.
  */
-import { browserRequest } from "@/lib/api/browser-client";
+import { browserPost, browserRequest } from "@/lib/api/browser-client";
 import type { VerticalKey } from "@/types/facility";
 
 export interface AdminPriceRow {
@@ -42,6 +42,25 @@ export interface AdminFacility {
 
 /** 보낸 필드만 반영된다 */
 export type AdminFacilityPatch = Partial<Omit<AdminFacility, "slug" | "vertical" | "updatedAt">>;
+
+export interface RehostResult {
+  /** 이번 호출에서 처리한 시설 수 */
+  facilities: number;
+  /** 우리 S3 로 옮긴 사진 수 */
+  moved: number;
+  /** 내려받지 못해 원래 URL 로 남긴 사진 수 */
+  failed: number;
+  /** 아직 외부 URL 사진이 남은 시설 수 */
+  remaining: number;
+}
+
+/**
+ * 조리원 홈페이지 사진을 우리 S3 로 옮긴다 — 실제 작업은 운영 서버가 한다.
+ * 한 번에 limit 곳만 처리하므로 remaining 이 0 이 될 때까지 반복 호출한다.
+ */
+export function rehostFacilityImages(limit: number): Promise<RehostResult> {
+  return browserPost<RehostResult>("/salpyeo/admin/facilities/rehost-images", { limit });
+}
 
 export async function fetchAdminFacilities(vertical: VerticalKey, keyword?: string): Promise<AdminFacility[]> {
   const params = new URLSearchParams({ vertical });

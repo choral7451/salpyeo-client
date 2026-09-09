@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AdminGate } from "@/components/admin/admin-gate";
+import { RehostPanel } from "@/components/admin/rehost-panel";
 import { FacilitySearch } from "@/components/facility/facility-search";
 import { fetchAdminFacilities, type AdminFacility } from "@/lib/api/admin";
 import { formatPrice } from "@/lib/format";
@@ -63,7 +64,11 @@ function AdminFacilityList() {
           </span>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <div className="mt-5">
+          <RehostPanel onDone={() => window.location.reload()} />
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <FacilitySearch value={keyword} onChange={search} />
           {q ? <span className="text-sm text-text-secondary">{filtered.length}곳</span> : null}
         </div>
