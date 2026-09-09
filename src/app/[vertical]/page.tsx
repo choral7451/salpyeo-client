@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { ComingSoon } from "@/components/common/coming-soon";
 import { FacilityListView } from "@/components/facility/facility-list-view";
@@ -39,7 +40,10 @@ export default async function FacilityListPage({ params }: Props) {
             {vertical.asOf ? ` · ${formatAsOf(vertical.asOf)} 기준` : null}
           </span>
         </div>
-        <FacilityListView vertical={vertical} facilities={facilities} />
+        {/* 목록 뷰가 검색·정렬 상태를 쿼리에서 읽는다(useSearchParams) — 정적 프리렌더가 막히지 않도록 감싼다 */}
+        <Suspense fallback={null}>
+          <FacilityListView vertical={vertical} facilities={facilities} />
+        </Suspense>
       </div>
     </div>
   );
