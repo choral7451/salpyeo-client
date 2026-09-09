@@ -1,15 +1,17 @@
 "use client";
 
 import { SearchX } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { EmptyState } from "@/components/common/empty-state";
 import { useCompare } from "@/hooks/use-compare";
+import { readListParams, toListQuery } from "@/lib/list-params";
 import type { Facility, VerticalMeta } from "@/types/facility";
 
 import { CompareBar } from "./compare-bar";
 import { FacilityCard } from "./facility-card";
-import { ALL_REGIONS, matchesRegion, RegionFilter, type RegionSelection } from "./region-filter";
+import { matchesRegion, RegionFilter, type RegionSelection } from "./region-filter";
 import { SORTS, SortSelect, type SortKey } from "./sort-select";
 
 export function FacilityListView({
@@ -21,9 +23,37 @@ export function FacilityListView({
   facilities: Facility[];
   query?: string;
 }) {
-  const [sort, setSort] = useState<SortKey>("priceAsc");
-  const [region, setRegion] = useState<RegionSelection>(ALL_REGIONS);
+  const searchParams = useSearchParams();
+  const initial = readListParams(searchParams);
+  const [sort, setSort] = useState<SortKey>(
+    SORTS.some((s) => s.key === initial.sort) ? (initial.sort as SortKey) : "priceAsc",
+  );
+  const [region, setRegion] = useState<RegionSelection>({
+    sido: initial.sido ?? "",
+    sigungu: initial.sigungu ?? "",
+  });
   const { hydrated, isSelected, toggle } = useCompare(vertical.key);
+
+  const listQuery = toListQuery({ q: query, sort, sido: region.sido, sigungu: region.sigungu });
+
+  // 서버 재요청 없이 주소만 바꿔 둔다 — 뒤로 오거나 링크를 공유해도 같은 화면이 복원된다
+  useEffect(() => {
+    const next = listQuery ? `?${listQuery}` : window.location.pathname;
+    if (window.location.search.slice(1) !== listQuery) {
+      window.history.replaceState(null, "", next);
+    }
+  }, [listQuery]);
+
+  // 브라우저 뒤로/앞으로 로 주소가 바뀌면 화면 상태도 따라간다
+  useEffect(() => {
+    const restore = () => {
+      const params = readListParams(new URLSearchParams(window.location.search));
+      setRegion({ sido: params.sido ?? "", sigungu: params.sigungu ?? "" });
+      setSort(SORTS.some((s) => s.key === params.sort) ? (params.sort as SortKey) : "priceAsc");
+    };
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, []);
 
   const visible = useMemo(() => {
     const q = query?.trim().toLowerCase();
@@ -61,6 +91,7 @@ export function FacilityListView({
             <FacilityCard
               key={f.id}
               facility={f}
+              listQuery={listQuery}
               priceLabel={vertical.priceLabel}
               checked={hydrated && isSelected(f.id)}
               onToggleCompare={() => toggle(f.id)}

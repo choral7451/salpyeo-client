@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import { BackLink } from "@/components/common/back-link";
+import { ListBackLink } from "@/components/facility/list-back-link";
 import { DetailSidebar } from "@/components/detail/detail-sidebar";
 import { FacilityHeaderCard } from "@/components/detail/facility-header-card";
 import { InspectionList } from "@/components/detail/inspection-list";
@@ -43,7 +45,10 @@ export default async function FacilityDetailPage({ params }: Props) {
   return (
     <div className="flex-1 bg-surface-alt">
       <div className="container-page pt-7 pb-24">
-        <BackLink href={routes.list(vertical.key)}>목록으로</BackLink>
+        {/* 쿼리는 클라이언트에서만 읽는다 — 상세 페이지를 정적으로 유지하려고 Suspense 로 감싼다 */}
+        <Suspense fallback={<BackLink href={routes.list(vertical.key)}>목록으로</BackLink>}>
+          <ListBackLink vertical={vertical.key} />
+        </Suspense>
 
         <div className="mt-4 grid grid-cols-[minmax(0,1fr)_340px] items-start gap-5 max-lg:grid-cols-1">
           <div className="flex flex-col gap-4">

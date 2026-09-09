@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Thumbnail } from "@/components/common/thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice, formatReviewSummary } from "@/lib/format";
-import { routes } from "@/lib/routes";
+import { detailHref } from "@/lib/list-params";
 import type { Facility } from "@/types/facility";
 
 import { CompareCheckbox } from "./compare-checkbox";
@@ -14,11 +14,14 @@ import { CompareCheckbox } from "./compare-checkbox";
 export function FacilityCard({
   facility,
   priceLabel,
+  listQuery,
   checked,
   onToggleCompare,
 }: {
   facility: Facility;
   priceLabel: string;
+  /** 목록의 지역·정렬·검색 상태. 상세에서 "목록으로" 가 이 화면으로 돌아온다 */
+  listQuery?: string;
   checked: boolean;
   onToggleCompare: () => void;
 }) {
@@ -42,7 +45,7 @@ export function FacilityCard({
           <h3 className="text-[17px] font-bold text-text">
             {/* 카드 전체를 덮는 링크 (stretched link). 체크박스는 z-10으로 위에 올림 */}
             <Link
-              href={routes.detail(facility.vertical, facility.id)}
+              href={detailHref(facility.vertical, facility.id, listQuery)}
               className="after:absolute after:inset-0 after:rounded-3xl after:content-['']"
             >
               {facility.name}
