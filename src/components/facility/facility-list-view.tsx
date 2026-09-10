@@ -11,6 +11,7 @@ import type { Facility, VerticalMeta } from "@/types/facility";
 
 import { CompareBar } from "./compare-bar";
 import { FacilityCard } from "./facility-card";
+import { FacilityListHeader } from "./facility-list-header";
 import { FacilitySearch } from "./facility-search";
 import { matchesRegion, RegionFilter, type RegionSelection } from "./region-filter";
 import { SORTS, SortSelect, type SortKey } from "./sort-select";
@@ -114,6 +115,8 @@ export function FacilityListView({
 
   return (
     <>
+      <FacilityListHeader label={vertical.label} count={matched.length} />
+
       {/*
         데스크탑: [지역][시군구] [검색 ······] [n곳] [정렬]  한 줄 — 지역으로 좁히고 그 안에서 검색하는 순서
         모바일: 지역 / 검색 / (결과 수 ······ 정렬) 세 줄

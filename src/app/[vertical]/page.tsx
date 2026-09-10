@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { ComingSoon } from "@/components/common/coming-soon";
+import { FacilityListHeader } from "@/components/facility/facility-list-header";
 import { FacilityListView } from "@/components/facility/facility-list-view";
 import { SERVICE_REGION } from "@/data/verticals";
 import { getFacilities, toListFacility } from "@/lib/api/facilities";
@@ -46,20 +47,8 @@ export default async function FacilityListPage({ params }: Props) {
   return (
     <div className="flex-1 bg-surface-alt">
       <div className="container-page pt-8 pb-[140px]">
-        {/*
-          제목 옆은 전체 시설 수(고정). 필터로 좁힌 수는 필터 줄에서 보여 준다.
-          출처·기준일은 상세의 요금표에서 밝히므로 여기 두지 않는다.
-        */}
-        <div className="flex flex-wrap items-baseline gap-x-2.5">
-          <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-text max-sm:text-[24px]">
-            {SERVICE_REGION.label} {vertical.label}
-          </h1>
-          <span className="text-[17px] font-bold text-text-tertiary max-sm:text-[15px]">
-            {vertical.count}곳
-          </span>
-        </div>
         {/* 목록 뷰가 검색·정렬 상태를 쿼리에서 읽는다(useSearchParams) — 정적 프리렌더가 막히지 않도록 감싼다 */}
-        <Suspense fallback={null}>
+        <Suspense fallback={<FacilityListHeader label={vertical.label} count={vertical.count} />}>
           <FacilityListView vertical={vertical} facilities={facilities} />
         </Suspense>
       </div>

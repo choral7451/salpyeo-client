@@ -4,16 +4,26 @@ import { ChevronDown } from "lucide-react";
 
 import type { Facility } from "@/types/facility";
 
-export type SortKey = "priceAsc" | "ratingDesc" | "reviewsDesc" | "distanceAsc";
+export type SortKey = "priceAsc" | "priceDesc";
 
-/** price 0 은 "미공개" — 낮은순에서 맨 뒤로 보낸다 (서버 정렬과 같은 규칙) */
-const priceOrUnknown = (f: Facility) => (f.price > 0 ? f.price : Number.MAX_SAFE_INTEGER);
+/** price 0 은 "미공개" — 어느 방향으로 정렬하든 맨 뒤로 보낸다 (서버 정렬과 같은 규칙) */
+const known = (f: Facility) => f.price > 0;
 
+/**
+ * 평점·후기·거리 정렬은 데이터가 들어오면 다시 넣는다.
+ * 지금은 rating·reviewCount 가 전부 0, distance 가 비어 있어 정렬해도 순서가 바뀌지 않는다.
+ */
 export const SORTS: { key: SortKey; label: string; compare: (a: Facility, b: Facility) => number }[] = [
-  { key: "priceAsc", label: "가격 낮은순", compare: (a, b) => priceOrUnknown(a) - priceOrUnknown(b) },
-  { key: "ratingDesc", label: "평점 높은순", compare: (a, b) => b.rating - a.rating },
-  { key: "reviewsDesc", label: "후기 많은순", compare: (a, b) => b.reviewCount - a.reviewCount },
-  { key: "distanceAsc", label: "가까운순", compare: (a, b) => a.distance.minutes - b.distance.minutes },
+  {
+    key: "priceAsc",
+    label: "가격 낮은순",
+    compare: (a, b) => Number(known(b)) - Number(known(a)) || a.price - b.price,
+  },
+  {
+    key: "priceDesc",
+    label: "가격 높은순",
+    compare: (a, b) => Number(known(b)) - Number(known(a)) || b.price - a.price,
+  },
 ];
 
 export function SortSelect({

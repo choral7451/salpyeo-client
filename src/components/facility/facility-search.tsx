@@ -26,7 +26,7 @@ export function FacilitySearch({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label="시설 검색"
-        className="h-full w-full rounded-full border border-line bg-surface pr-9 pl-9 text-sm text-text outline-none transition-[border-color] placeholder:text-text-muted focus:border-primary"
+        className="h-full w-full appearance-none rounded-full border border-line bg-surface pr-9 pl-9 text-sm text-text outline-none transition-[border-color] placeholder:text-text-muted focus:border-primary"
       />
       {value ? (
         <button
