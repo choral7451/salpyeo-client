@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
 
 import { AuthMenu } from "@/components/layout/auth-menu";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import type { VerticalMeta } from "@/types/facility";
-
-const notReady = () => toast("아직 준비 중인 기능이에요");
 
 export function Header({ verticals }: { verticals: VerticalMeta[] }) {
   const params = useParams<{ vertical?: string }>();
@@ -70,8 +67,8 @@ export function Header({ verticals }: { verticals: VerticalMeta[] }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={notReady} className="px-3">
-            시설 파트너
+          <Button variant="ghost" size="sm" asChild className="px-3">
+            <Link href={routes.inquiry()}>문의</Link>
           </Button>
           <AuthMenu />
         </div>
