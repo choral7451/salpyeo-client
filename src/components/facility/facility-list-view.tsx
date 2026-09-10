@@ -94,7 +94,6 @@ export function FacilityListView({
       .sort(compare);
   }, [facilities, keyword, sort, region]);
 
-  const isFiltered = Boolean(keyword.trim() || region.sido || region.sigungu);
   const visible = matched.slice(0, visibleCount);
   const hasMore = matched.length > visible.length;
 
@@ -123,10 +122,8 @@ export function FacilityListView({
         <RegionFilter facilities={facilities} value={region} onChange={changeRegion} />
         <FacilitySearch value={keyword} onChange={changeKeyword} />
 
-        <div className="flex items-center justify-between gap-3 lg:contents">
-          <span className="shrink-0 text-[13px] font-semibold whitespace-nowrap text-text-tertiary">
-            {isFiltered ? <span className="text-text">{matched.length}곳</span> : `${matched.length}곳`}
-          </span>
+        {/* 결과 수는 두지 않는다 — 제목 옆 숫자와 겹치고, 카드가 곧바로 보이므로 굳이 알릴 필요가 없다 */}
+        <div className="flex justify-end lg:ml-auto">
           <SortSelect value={sort} onChange={changeSort} />
         </div>
       </div>
