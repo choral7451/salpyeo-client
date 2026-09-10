@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { Info } from "lucide-react";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCompare } from "@/hooks/use-compare";
+import { routes } from "@/lib/routes";
 import { formatPrice } from "@/lib/format";
 import type { Facility } from "@/types/facility";
 
@@ -20,22 +21,14 @@ export function DetailSidebar({
   const selected = hydrated && isSelected(facility.id);
 
   return (
-    <aside className="sticky top-20 flex flex-col gap-3 max-lg:static">
+    <aside className="sticky top-20 flex flex-col gap-3 max-lg:static max-lg:order-first">
       <Card className="p-6">
         <div className="text-[13px] text-text-tertiary">{priceLabel}</div>
         <div className="tabular mt-1 text-[28px] font-extrabold text-text">
           {formatPrice(facility.price)}
         </div>
-        <Button
-          size="block"
-          className="mt-4"
-          onClick={() =>
-            toast("문의 기능은 준비 중이에요", {
-              description: "오픈 후 시설에 바로 전달돼요.",
-            })
-          }
-        >
-          방문 상담 문의하기
+        <Button asChild size="block" className="mt-4">
+          <Link href={routes.inquiry()}>정보가 다르면 알려주세요</Link>
         </Button>
         <Button
           variant="outline"
@@ -47,7 +40,7 @@ export function DetailSidebar({
           {selected ? "비교함에서 빼기" : "비교함에 담기"}
         </Button>
         <p className="mt-3.5 text-xs leading-[1.6] text-text-muted">
-          문의는 시설에 바로 전달되며, 살펴는 상담 과정에 개입하지 않아요.
+          요금·연락처가 실제와 다르면 알려주세요. 확인 후 바로잡습니다.
         </p>
       </Card>
 

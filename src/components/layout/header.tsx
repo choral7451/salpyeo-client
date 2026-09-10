@@ -15,7 +15,7 @@ export function Header({ verticals }: { verticals: VerticalMeta[] }) {
 
   return (
     <header className="sticky top-0 z-20 border-b border-hairline bg-white/[0.94] backdrop-blur-[10px]">
-      <div className="container-page flex h-[60px] items-center gap-8">
+      <div className="container-page flex h-[60px] items-center gap-8 max-md:gap-3">
         <Link
           href={routes.home()}
           className="text-[22px] font-extrabold tracking-[-0.5px] text-primary"
@@ -23,7 +23,11 @@ export function Header({ verticals }: { verticals: VerticalMeta[] }) {
           살펴
         </Link>
 
-        <nav aria-label="시설 종류" className="flex flex-1 gap-1 overflow-x-auto">
+        <nav
+          aria-label="시설 종류"
+          // 모바일에서 탭이 넘칠 때 가로 스크롤 — 스크롤바는 감춘다
+          className="flex flex-1 gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {verticals.map((v) => {
             const isActive = v.enabled && activeKey === v.key;
             const base =

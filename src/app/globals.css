@@ -131,6 +131,12 @@
   padding-inline: 24px;
 }
 
+@media (max-width: 480px) {
+  .container-page {
+    padding-inline: 16px;
+  }
+}
+
 /* 숫자·가격 정렬 */
 @utility tabular {
   font-variant-numeric: tabular-nums;
@@ -142,6 +148,8 @@
   }
   html {
     @apply font-sans antialiased;
+    /* 브라우저 기본 UI(스크롤바·폼)를 밝은 테마로 그린다 */
+    color-scheme: light;
   }
   body {
     @apply bg-background text-foreground;
@@ -149,5 +157,41 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+  /* 모바일: 더블탭 확대 지연(300ms) 제거 + 회색 하이라이트 대신 우리 hover/active 상태를 쓴다 */
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  label {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* 제목은 줄바꿈을 고르게 — 좁은 화면에서 한 단어만 남는 줄을 막는다 */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  /* 스티키 헤더에 가려지지 않도록 */
+  :target {
+    scroll-margin-top: 76px;
+  }
+}
+
+/* 손가락 조작을 방해하지 않도록 모션은 사용자 설정을 따른다 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

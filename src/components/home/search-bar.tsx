@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -23,29 +22,26 @@ export function SearchBar({ className }: { className?: string }) {
       role="search"
       onSubmit={onSubmit}
       className={cn(
-        "flex w-full max-w-[640px] items-center gap-2 rounded-2xl border-2 border-primary bg-surface py-2 pr-2 pl-5 shadow-search",
+        "flex w-full max-w-[640px] items-center gap-2 rounded-2xl border-2 border-primary bg-surface py-2 pr-2 pl-5 shadow-search max-sm:pl-4",
         className,
       )}
     >
-      <button
-        type="button"
-        className="flex shrink-0 items-center gap-1 text-[15px] font-bold text-text"
-        aria-label={`지역 선택: ${SERVICE_REGION.label}`}
-      >
+      {/* 지역 선택은 아직 없다 — 누를 수 있는 것처럼 보이면 안 되므로 표시만 한다 */}
+      <span className="shrink-0 text-[15px] font-bold text-text max-sm:hidden">
         {SERVICE_REGION.label}
-        <ChevronDown size={13} strokeWidth={2.5} className="text-text-muted" aria-hidden />
-      </button>
-      <div aria-hidden className="h-[22px] w-px shrink-0 bg-line" />
+      </span>
+      <div aria-hidden className="h-[22px] w-px shrink-0 bg-line max-sm:hidden" />
       <input
         type="search"
         name="q"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="시설 이름·지역·주소로 검색"
+        autoComplete="off"
         aria-label="시설 검색"
         className="min-w-0 flex-1 bg-transparent text-base text-text outline-none placeholder:text-text-muted"
       />
-      <Button type="submit" size="md" className="shrink-0 px-[22px] text-base">
+      <Button type="submit" size="md" className="shrink-0 px-[22px] text-base max-sm:px-4">
         검색
       </Button>
     </form>

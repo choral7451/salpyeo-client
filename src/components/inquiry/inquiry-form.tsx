@@ -85,7 +85,7 @@ export function InquiryForm() {
 
   if (doneId !== null) {
     return (
-      <div className="mt-8 rounded-2xl border border-hairline bg-surface p-8 text-center">
+      <div role="status" aria-live="polite" className="mt-8 rounded-2xl border border-hairline bg-surface p-8 text-center">
         <h2 className="text-lg font-extrabold text-text">문의를 접수했습니다</h2>
         <p className="mt-2 text-sm leading-relaxed text-text-secondary">
           접수번호 <span className="font-bold text-text">#{doneId}</span> · 남겨 주신 이메일{" "}
@@ -121,6 +121,7 @@ export function InquiryForm() {
           maxLength={INQUIRY_TITLE_MAX}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="예: 올리비움산후조리원 요금이 실제와 달라요"
+          autoComplete="off"
           className={fieldClass}
         />
       </label>
@@ -138,6 +139,7 @@ export function InquiryForm() {
           onChange={(e) => setContent(e.target.value)}
           rows={8}
           placeholder="어떤 점이 궁금하신지, 어느 시설의 어떤 정보가 잘못됐는지 알려 주시면 빠르게 확인하겠습니다."
+          autoComplete="off"
           className={cn(fieldClass, "resize-y leading-relaxed")}
         />
       </label>
@@ -150,6 +152,8 @@ export function InquiryForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="mom@example.com"
           autoComplete="email"
+          inputMode="email"
+          spellCheck={false}
           className={fieldClass}
         />
       </label>

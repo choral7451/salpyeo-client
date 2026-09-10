@@ -4,8 +4,10 @@ import { Suspense } from "react";
 import { ComingSoon } from "@/components/common/coming-soon";
 import { FacilityListView } from "@/components/facility/facility-list-view";
 import { SERVICE_REGION } from "@/data/verticals";
-import { getFacilities } from "@/lib/api/facilities";
+import { getFacilities, toListFacility } from "@/lib/api/facilities";
 import { formatAsOf } from "@/lib/format";
+import { routes } from "@/lib/routes";
+import { isIndexableVertical } from "@/lib/site";
 import { resolveVertical, verticalStaticParams } from "@/lib/vertical-params";
 
 type Props = { params: Promise<{ vertical: string }> };
@@ -16,7 +18,20 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const vertical = await resolveVertical((await params).vertical);
-  return { title: `${SERVICE_REGION.label} ${vertical.label}` };
+  const title = `${SERVICE_REGION.label} ${vertical.label} 요금 비교`;
+  const description = vertical.enabled
+    ? `${SERVICE_REGION.label} ${vertical.label} ${vertical.count}곳의 ${vertical.priceLabel} 요금을 한 화면에서 비교하세요. ${vertical.source} 공개 자료 기준.`
+    : `${vertical.label} 정보는 준비 중입니다.`;
+  const path = routes.list(vertical.key);
+
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    // 데이터가 없는 버티컬은 색인시키지 않는다 (빈 목록이 검색에 걸리면 손해)
+    robots: isIndexableVertical(vertical.key) && vertical.enabled ? undefined : { index: false, follow: true },
+    openGraph: { type: "website", url: path, title, description },
+  };
 }
 
 export default async function FacilityListPage({ params }: Props) {
@@ -26,7 +41,8 @@ export default async function FacilityListPage({ params }: Props) {
   if (!vertical.enabled) return <ComingSoon vertical={vertical} />;
 
   // 전체를 한 번에 받아 검색·지역·정렬은 클라이언트에서 처리한다 (지역 옵션과 개수가 검색어에 흔들리지 않도록)
-  const facilities = await getFacilities(vertical.key);
+  // 카드에 안 쓰는 필드(요금표·점검·후기·대표 외 사진)는 덜어 내고 넘긴다 — 페이지 용량 절반 이상 차이
+  const facilities = (await getFacilities(vertical.key)).map(toListFacility);
 
   return (
     <div className="flex-1 bg-surface-alt">

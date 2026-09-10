@@ -33,6 +33,21 @@ export async function getVertical(key: string): Promise<VerticalMeta | null> {
   }
 }
 
+/**
+ * 목록 화면이 쓰는 필드만 남긴다.
+ * 전국 456곳을 통째로 내려보내면 사진 4천여 장의 URL 과 요금표까지 페이지에 실려
+ * HTML 이 1MB 를 넘는다 (모바일 데이터로는 부담). 카드에 필요한 건 대표 사진 한 장뿐이다.
+ */
+export function toListFacility(facility: Facility): Facility {
+  return {
+    ...facility,
+    images: facility.images.slice(0, 1),
+    priceRows: [],
+    inspections: [],
+    review: null,
+  };
+}
+
 export interface FacilityListOptions {
   q?: string;
   sort?: FacilitySort;

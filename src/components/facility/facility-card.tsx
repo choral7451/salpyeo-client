@@ -64,7 +64,7 @@ export function FacilityCard({
         <CompareCheckbox
           checked={checked}
           onToggle={onToggleCompare}
-          label={`${facility.name} 비교함에 ${checked ? "서 빼기" : " 담기"}`}
+          label={checked ? `${facility.name} 비교함에서 빼기` : `${facility.name} 비교함에 담기`}
           className="relative z-10"
         />
       </div>

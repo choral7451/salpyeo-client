@@ -5,6 +5,8 @@ import { InquiryForm } from "@/components/inquiry/inquiry-form";
 export const metadata: Metadata = {
   title: "문의하기",
   description: "잘못된 정보 제보, 시설 등록·수정 요청, 그 밖의 문의를 남겨 주세요.",
+  // 접수 폼은 검색에 걸릴 이유가 없다 (robots.ts 와 함께)
+  robots: { index: false, follow: true },
 };
 
 export default function InquiryPage() {

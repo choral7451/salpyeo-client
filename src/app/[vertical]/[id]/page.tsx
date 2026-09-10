@@ -11,6 +11,8 @@ import { PriceTable } from "@/components/detail/price-table";
 import { ReviewCard } from "@/components/detail/review-card";
 import { getFacilities, getFacility, getVerticals } from "@/lib/api/facilities";
 import { routes } from "@/lib/routes";
+import { formatPrice } from "@/lib/format";
+import { isIndexableVertical } from "@/lib/site";
 import { resolveVertical } from "@/lib/vertical-params";
 
 type Props = { params: Promise<{ vertical: string; id: string }> };
@@ -30,7 +32,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { vertical: verticalParam, id } = await params;
   const vertical = await resolveVertical(verticalParam);
   const facility = vertical.enabled ? await getFacility(vertical.key, id) : null;
-  return { title: facility?.name ?? vertical.label };
+  if (!facility) return { title: vertical.label, robots: { index: false, follow: true } };
+
+  const price = facility.price > 0 ? `${vertical.priceLabel} ${formatPrice(facility.price)}` : `${vertical.priceLabel} 미공개`;
+  const description = `${facility.meta} ${facility.name}의 ${price}. ${vertical.source} 공개 자료 기준으로 요금·연락처·사진을 정리했습니다.`;
+  const path = routes.detail(vertical.key, facility.id);
+
+  return {
+    title: `${facility.name} ${vertical.label === "산후조리원" ? "요금" : "정보"}`,
+    description,
+    alternates: { canonical: path },
+    robots: isIndexableVertical(vertical.key) ? undefined : { index: false, follow: true },
+    openGraph: {
+      type: "website",
+      url: path,
+      title: `${facility.name} — ${price}`,
+      description,
+      images: facility.images[0] ? [{ url: facility.images[0].url, alt: facility.name }] : undefined,
+    },
+  };
 }
 
 export default async function FacilityDetailPage({ params }: Props) {
@@ -44,6 +64,31 @@ export default async function FacilityDetailPage({ params }: Props) {
 
   return (
     <div className="flex-1 bg-surface-alt">
+      {/* 구조화 데이터 — 검색 결과에 주소·전화가 함께 보이도록. 공개 자료에 있는 값만 넣는다 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            name: facility.name,
+            ...(facility.images.length > 0 ? { image: facility.images.slice(0, 5).map((i) => i.url) } : {}),
+            ...(facility.phone ? { telephone: facility.phone } : {}),
+            ...(facility.website ? { url: facility.website } : {}),
+            ...(facility.address || facility.region.sido
+              ? {
+                  address: {
+                    "@type": "PostalAddress",
+                    addressCountry: "KR",
+                    ...(facility.region.sido ? { addressRegion: facility.region.sido } : {}),
+                    ...(facility.region.sigungu ? { addressLocality: facility.region.sigungu } : {}),
+                    ...(facility.address ? { streetAddress: facility.address } : {}),
+                  },
+                }
+              : {}),
+          }),
+        }}
+      />
       <div className="container-page pt-7 pb-24">
         {/* 쿼리는 클라이언트에서만 읽는다 — 상세 페이지를 정적으로 유지하려고 Suspense 로 감싼다 */}
         <Suspense fallback={<BackLink href={routes.list(vertical.key)}>목록으로</BackLink>}>

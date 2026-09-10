@@ -2,7 +2,7 @@
 
 import { SearchX } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { EmptyState } from "@/components/common/empty-state";
 import { useCompare } from "@/hooks/use-compare";
@@ -14,6 +14,12 @@ import { FacilityCard } from "./facility-card";
 import { FacilitySearch } from "./facility-search";
 import { matchesRegion, RegionFilter, type RegionSelection } from "./region-filter";
 import { SORTS, SortSelect, type SortKey } from "./sort-select";
+
+/**
+ * 한 번에 그리는 카드 수. 전국 456곳을 통째로 그리면 카드마다 이미지가 붙어
+ * 모바일에서 첫 렌더가 눈에 띄게 느려진다. 스크롤이 끝에 닿으면 이어서 붙인다.
+ */
+const PAGE_SIZE = 24;
 
 export function FacilityListView({
   vertical,
@@ -33,8 +39,24 @@ export function FacilityListView({
   });
   const [keyword, setKeyword] = useState(initial.q ?? "");
   const { hydrated, isSelected, toggle } = useCompare(vertical.key);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinel = useRef<HTMLDivElement>(null);
 
   const listQuery = toListQuery({ q: keyword, sort, sido: region.sido, sigungu: region.sigungu });
+
+  // 조건이 바뀌면 다시 처음부터 보여 준다
+  const changeKeyword = (value: string) => {
+    setKeyword(value);
+    setVisibleCount(PAGE_SIZE);
+  };
+  const changeRegion = (value: RegionSelection) => {
+    setRegion(value);
+    setVisibleCount(PAGE_SIZE);
+  };
+  const changeSort = (value: SortKey) => {
+    setSort(value);
+    setVisibleCount(PAGE_SIZE);
+  };
 
   // 서버 재요청 없이 주소만 바꿔 둔다 — 뒤로 오거나 링크를 공유해도 같은 화면이 복원된다
   useEffect(() => {
@@ -51,12 +73,15 @@ export function FacilityListView({
       setRegion({ sido: params.sido ?? "", sigungu: params.sigungu ?? "" });
       setKeyword(params.q ?? "");
       setSort(SORTS.some((s) => s.key === params.sort) ? (params.sort as SortKey) : "priceAsc");
+      setVisibleCount(PAGE_SIZE);
     };
     window.addEventListener("popstate", restore);
     return () => window.removeEventListener("popstate", restore);
   }, []);
 
-  const visible = useMemo(() => {
+  const showMore = useCallback(() => setVisibleCount((n) => n + PAGE_SIZE), []);
+
+  const matched = useMemo(() => {
     const q = keyword.trim().toLowerCase();
     const compare = SORTS.find((s) => s.key === sort)?.compare;
     return facilities
@@ -69,20 +94,38 @@ export function FacilityListView({
       .sort(compare);
   }, [facilities, keyword, sort, region]);
 
+  const visible = matched.slice(0, visibleCount);
+  const hasMore = matched.length > visible.length;
+
+  // 목록 끝이 보이면 다음 묶음을 붙인다
+  useEffect(() => {
+    const target = sentinel.current;
+    if (!target || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) showMore();
+      },
+      { rootMargin: "600px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, showMore]);
+
   return (
     <>
       <div className="mt-[18px] flex flex-wrap items-center gap-2">
-        <FacilitySearch value={keyword} onChange={setKeyword} />
+        <FacilitySearch value={keyword} onChange={changeKeyword} />
       </div>
       <div className="mt-2.5 flex flex-wrap items-center gap-2">
-        <RegionFilter facilities={facilities} value={region} onChange={setRegion} />
+        <RegionFilter facilities={facilities} value={region} onChange={changeRegion} />
         <span className="text-[13px] font-semibold text-text-tertiary">
-          {visible.length}곳
+          {matched.length}곳
         </span>
-        <SortSelect value={sort} onChange={setSort} />
+        <SortSelect value={sort} onChange={changeSort} />
       </div>
 
-      {visible.length === 0 ? (
+      {matched.length === 0 ? (
         <EmptyState
           className="mt-5"
           icon={<SearchX size={26} />}
@@ -103,6 +146,19 @@ export function FacilityListView({
           ))}
         </div>
       )}
+
+      {hasMore ? (
+        <>
+          <div ref={sentinel} aria-hidden className="h-px" />
+          <button
+            type="button"
+            onClick={showMore}
+            className="mt-4 w-full rounded-xl border border-line bg-surface py-3.5 text-sm font-bold text-text-secondary transition-colors hover:bg-surface-alt"
+          >
+            {matched.length - visible.length}곳 더 보기
+          </button>
+        </>
+      ) : null}
 
       <CompareBar vertical={vertical.key} facilities={facilities} />
     </>
