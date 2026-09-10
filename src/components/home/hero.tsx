@@ -8,7 +8,7 @@ export function Hero() {
       <div className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-4 py-2">
         <ShieldCheck size={15} strokeWidth={2} className="text-primary" aria-hidden />
         <span className="text-sm font-bold text-primary-hover">
-          법으로 공개된 가격·평가 데이터 기반
+          전화 열 번 대신, 한 화면에서
         </span>
       </div>
       <h1 className="mt-6 text-[46px] leading-[1.25] font-extrabold tracking-[-1.2px] text-text max-md:text-[34px]">
