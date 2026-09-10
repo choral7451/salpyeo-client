@@ -5,12 +5,9 @@ import { getVerticals } from "@/lib/api/facilities";
 
 export default async function HomePage() {
   const verticals = await getVerticals();
-  // 지금 데이터가 있는 건 산후조리원뿐 — 배지에 그 수를 보여 준다
-  const facilityCount = verticals.find((v) => v.key === "post")?.count ?? 0;
-
   return (
     <div className="flex-1">
-      <Hero facilityCount={facilityCount} />
+      <Hero />
       <div className="container-page pt-6 pb-24">
         <VerticalGrid verticals={verticals} />
         <div className="mt-16">

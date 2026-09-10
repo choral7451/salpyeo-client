@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | 살펴",
   },
   description:
-    "전국 산후조리원의 공개된 2주 요금을 한 화면에서 비교하세요. 보건복지부 공개 자료 기반.",
+    "산후조리원부터 요양원까지, 법으로 공개된 가격·평가 공공데이터를 한 곳에서 비교하세요.",
 };
 
 const PRETENDARD_CSS =
