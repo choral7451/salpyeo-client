@@ -5,7 +5,6 @@ import { ComingSoon } from "@/components/common/coming-soon";
 import { FacilityListView } from "@/components/facility/facility-list-view";
 import { SERVICE_REGION } from "@/data/verticals";
 import { getFacilities, toListFacility } from "@/lib/api/facilities";
-import { formatAsOf } from "@/lib/format";
 import { routes } from "@/lib/routes";
 import { isIndexableVertical } from "@/lib/site";
 import { resolveVertical, verticalStaticParams } from "@/lib/vertical-params";
@@ -47,15 +46,13 @@ export default async function FacilityListPage({ params }: Props) {
   return (
     <div className="flex-1 bg-surface-alt">
       <div className="container-page pt-8 pb-[140px]">
-        <div className="flex flex-wrap items-baseline gap-3">
-          <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-text">
-            {SERVICE_REGION.label} {vertical.label}
-          </h1>
-          <span className="text-[15px] text-text-tertiary">
-            {vertical.count}곳 · {vertical.source}
-            {vertical.asOf ? ` · ${formatAsOf(vertical.asOf)} 기준` : null}
-          </span>
-        </div>
+        {/*
+          제목만 둔다. 시설 수는 필터 줄에 있고(중복), 출처·기준일은 상세의 요금표에서 밝힌다 —
+          목록 상단에서는 검색·필터로 바로 넘어가는 게 낫다.
+        */}
+        <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-text max-sm:text-[24px]">
+          {SERVICE_REGION.label} {vertical.label}
+        </h1>
         {/* 목록 뷰가 검색·정렬 상태를 쿼리에서 읽는다(useSearchParams) — 정적 프리렌더가 막히지 않도록 감싼다 */}
         <Suspense fallback={null}>
           <FacilityListView vertical={vertical} facilities={facilities} />

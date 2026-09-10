@@ -94,6 +94,7 @@ export function FacilityListView({
       .sort(compare);
   }, [facilities, keyword, sort, region]);
 
+  const isFiltered = Boolean(keyword.trim() || region.sido || region.sigungu);
   const visible = matched.slice(0, visibleCount);
   const hasMore = matched.length > visible.length;
 
@@ -117,12 +118,29 @@ export function FacilityListView({
       <div className="mt-[18px] flex flex-wrap items-center gap-2">
         <FacilitySearch value={keyword} onChange={changeKeyword} />
       </div>
-      <div className="mt-2.5 flex flex-wrap items-center gap-2">
+
+      {/*
+        데스크탑: [지역][시군구]  n곳 ······ [정렬]  한 줄
+        모바일: 지역이 한 줄을 채우고, 결과 수와 정렬이 그 아래 좌우로 — 정렬이 혼자 떨어지지 않게
+      */}
+      <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:items-center">
         <RegionFilter facilities={facilities} value={region} onChange={changeRegion} />
-        <span className="text-[13px] font-semibold text-text-tertiary">
-          {matched.length}곳
-        </span>
-        <SortSelect value={sort} onChange={changeSort} />
+
+        <div className="flex items-center justify-between gap-2 sm:contents">
+          <span className="text-[13px] font-semibold text-text-tertiary">
+            {isFiltered ? (
+              <>
+                <span className="text-text">{matched.length}곳</span>
+                <span className="text-text-disabled"> / {facilities.length}곳</span>
+              </>
+            ) : (
+              `${matched.length}곳`
+            )}
+          </span>
+          <div className="sm:ml-auto">
+            <SortSelect value={sort} onChange={changeSort} />
+          </div>
+        </div>
       </div>
 
       {matched.length === 0 ? (

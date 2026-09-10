@@ -24,7 +24,7 @@ export function SortSelect({
   onChange: (key: SortKey) => void;
 }) {
   return (
-    <label className="relative ml-auto flex items-center gap-1 py-2 text-sm font-semibold text-text-secondary">
+    <label className="relative flex h-11 items-center gap-1 text-sm font-semibold text-text-secondary sm:h-9">
       <span className="sr-only">정렬</span>
       <select
         value={value}

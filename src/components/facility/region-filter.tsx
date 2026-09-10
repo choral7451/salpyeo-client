@@ -45,23 +45,20 @@ function Select({
   onChange,
   placeholder,
   options,
-  disabled,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
   options: [string, number][];
-  disabled?: boolean;
 }) {
   return (
-    <label className="relative flex items-center gap-1 rounded-full border border-line bg-surface py-2 pr-7 pl-3.5 text-sm font-semibold text-text-secondary has-disabled:opacity-50">
+    <label className="relative flex h-11 min-w-0 flex-1 items-center gap-1 rounded-full border border-line bg-surface pr-7 pl-4 text-sm font-semibold text-text-secondary sm:h-9 sm:flex-none">
       <span className="sr-only">{label}</span>
       <select
         value={value}
-        disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
-        className="cursor-pointer appearance-none bg-transparent outline-none disabled:cursor-not-allowed"
+        className="w-full cursor-pointer appearance-none truncate bg-transparent outline-none"
       >
         <option value="">{placeholder}</option>
         {options.map(([name, count]) => (
@@ -93,7 +90,8 @@ export function RegionFilter({
   const { sidos, sigungus } = useRegionOptions(facilities, value.sido);
 
   return (
-    <div role="group" aria-label="지역 선택" className="flex flex-wrap gap-2">
+    // 모바일에서는 두 칸이 화면을 반씩 나눠 쓴다 (시도만 있으면 전체 너비)
+    <div role="group" aria-label="지역 선택" className="flex flex-1 gap-2 sm:flex-none">
       <Select
         label="시도"
         value={value.sido}
@@ -101,14 +99,16 @@ export function RegionFilter({
         options={sidos}
         onChange={(sido) => onChange({ sido, sigungu: "" })}
       />
-      <Select
-        label="시군구"
-        value={value.sigungu}
-        placeholder={value.sido ? "전체 시군구" : "시도를 먼저 선택"}
-        options={sigungus}
-        disabled={!value.sido}
-        onChange={(sigungu) => onChange({ ...value, sigungu })}
-      />
+      {/* 시군구는 시도를 고른 뒤에만 — 비활성 상태로 자리만 차지하지 않게 */}
+      {value.sido ? (
+        <Select
+          label="시군구"
+          value={value.sigungu}
+          placeholder="전체 시군구"
+          options={sigungus}
+          onChange={(sigungu) => onChange({ ...value, sigungu })}
+        />
+      ) : null}
     </div>
   );
 }
