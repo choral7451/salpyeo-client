@@ -1,4 +1,4 @@
-import { ShieldCheck } from "lucide-react";
+import { Clock } from "lucide-react";
 
 import { SearchBar } from "./search-bar";
 
@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="container-page pt-[72px] pb-10 text-center">
       <div className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-4 py-2">
-        <ShieldCheck size={15} strokeWidth={2} className="text-primary" aria-hidden />
+        <Clock size={15} strokeWidth={2.2} className="text-primary" aria-hidden />
         <span className="text-sm font-bold text-primary-hover">
           전화 열 번 대신, 한 화면에서
         </span>
