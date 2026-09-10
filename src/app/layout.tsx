@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     title: "살펴 — 전국 산후조리원 요금 비교",
     description: "공개된 2주 요금을 한 화면에서. 전화 열 번 대신 여기서 먼저 비교하세요.",
   },
+  // og:image·twitter:image 는 app/opengraph-image.png · twitter-image.png 파일이 자동으로 채운다
   twitter: {
     card: "summary_large_image",
     title: "살펴 — 전국 산후조리원 요금 비교",

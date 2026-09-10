@@ -1,5 +1,5 @@
 /** 사이트 전역 SEO 값 — 배포 도메인이 정해지면 NEXT_PUBLIC_SITE_URL 로 넘긴다 */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://salpyeo.kr").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://salpyeo.com").replace(/\/$/, "");
 
 export const SITE_NAME = "살펴";
 
