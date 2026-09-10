@@ -166,10 +166,10 @@ export function InquiryForm() {
                 <Image
                   src={f.preview}
                   alt={f.file.name}
-                  width={96}
-                  height={96}
+                  width={76}
+                  height={76}
                   unoptimized
-                  className="size-24 rounded-xl border border-hairline object-cover"
+                  className="size-19 rounded-xl border border-hairline object-cover"
                 />
                 <button
                   type="button"

@@ -5,7 +5,7 @@
 import { browserRequest } from "@/lib/api/browser-client";
 
 /** 서버와 같은 제한 — 넘기면 서버가 거절한다 */
-export const INQUIRY_MAX_FILES = 3;
+export const INQUIRY_MAX_FILES = 10;
 export const INQUIRY_MAX_FILE_SIZE = 5 * 1024 * 1024;
 export const INQUIRY_TITLE_MAX = 100;
 export const INQUIRY_CONTENT_MAX = 2000;
