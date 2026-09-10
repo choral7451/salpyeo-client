@@ -62,6 +62,12 @@ function AdminFacilityList() {
             {facilities === null ? "불러오는 중…" : `${facilities.length}곳`}
             {user ? ` · ${user.name}` : null}
           </span>
+          <Link
+            href={routes.adminInquiries()}
+            className="ml-auto text-sm font-bold text-text-secondary underline-offset-2 hover:text-primary hover:underline"
+          >
+            문의 보기 →
+          </Link>
         </div>
 
         <div className="mt-5">

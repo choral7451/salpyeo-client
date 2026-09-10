@@ -7,6 +7,8 @@ export const routes = {
     query ? `/${vertical}?q=${encodeURIComponent(query)}` : `/${vertical}`,
   detail: (vertical: VerticalKey, id: string) => `/${vertical}/${id}`,
   compare: (vertical: VerticalKey) => `/${vertical}/compare`,
+  inquiry: () => "/inquiry",
   admin: () => "/admin",
   adminFacility: (slug: string) => `/admin/${slug}`,
+  adminInquiries: () => "/admin/inquiries",
 } as const;
