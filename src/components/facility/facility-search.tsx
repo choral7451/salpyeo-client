@@ -2,6 +2,8 @@
 
 import { Search, X } from "lucide-react";
 
+import { cn, FILTER_CONTROL_HEIGHT } from "@/lib/utils";
+
 /** 목록 안에서 이름·지역·주소로 좁히는 검색창 */
 export function FacilitySearch({
   value,
@@ -13,7 +15,7 @@ export function FacilitySearch({
   placeholder?: string;
 }) {
   return (
-    <div className="relative flex h-11 min-w-[220px] flex-1 items-center lg:h-9">
+    <div className="relative flex min-w-[200px] flex-1 items-center">
       <Search
         size={15}
         strokeWidth={2.5}
@@ -26,7 +28,10 @@ export function FacilitySearch({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label="시설 검색"
-        className="h-full w-full appearance-none rounded-full border border-line bg-surface pr-9 pl-9 text-sm text-text outline-none transition-[border-color] placeholder:text-text-muted focus:border-primary"
+        className={cn(
+          FILTER_CONTROL_HEIGHT,
+          "w-full appearance-none rounded-full border border-line bg-surface pr-9 pl-9 text-sm text-text outline-none transition-[border-color] placeholder:text-text-muted focus:border-primary",
+        )}
       />
       {value ? (
         <button

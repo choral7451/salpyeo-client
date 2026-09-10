@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 
+import { cn, FILTER_CONTROL_HEIGHT } from "@/lib/utils";
 import type { Facility } from "@/types/facility";
 
 export type SortKey = "priceAsc" | "priceDesc";
@@ -34,7 +35,7 @@ export function SortSelect({
   onChange: (key: SortKey) => void;
 }) {
   return (
-    <label className="relative flex h-11 shrink-0 items-center gap-1 text-sm font-semibold text-text-secondary lg:h-9">
+    <label className={cn(FILTER_CONTROL_HEIGHT, "relative flex shrink-0 items-center gap-1 text-sm font-semibold text-text-secondary")}>
       <span className="sr-only">정렬</span>
       <select
         value={value}

@@ -3,6 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import { useMemo } from "react";
 
+import { cn, FILTER_CONTROL_HEIGHT } from "@/lib/utils";
 import type { Facility } from "@/types/facility";
 
 export interface RegionSelection {
@@ -53,7 +54,10 @@ function Select({
   options: [string, number][];
 }) {
   return (
-    <label className="relative flex h-11 min-w-0 flex-1 items-center gap-1 rounded-full border border-line bg-surface pr-7 pl-4 text-sm font-semibold text-text-secondary lg:h-9 lg:flex-none">
+    <label className={cn(
+        FILTER_CONTROL_HEIGHT,
+        "relative flex min-w-0 flex-1 items-center gap-1 rounded-full border border-line bg-surface pr-7 pl-4 text-sm font-semibold text-text-secondary lg:flex-none",
+      )}>
       <span className="sr-only">{label}</span>
       <select
         value={value}
