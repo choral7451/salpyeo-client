@@ -35,6 +35,9 @@ export const metadata: Metadata = {
     title: "살펴 — 전국 산후조리원 요금 비교",
     description: "공개된 2주 요금을 한 화면에서.",
   },
+  // Search Console 소유권 확인 (URL 접두어 속성용).
+  // 도메인 속성(salpyeo.com 전체)은 DNS TXT 레코드로만 인증된다 — 이 태그로는 안 된다.
+  verification: { google: "XAfqiljHDedxhHJN6Qdript-6OZsPtEiZSanFfj0n7U" },
   robots: {
     index: true,
     follow: true,
