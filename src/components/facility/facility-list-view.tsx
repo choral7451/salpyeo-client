@@ -115,31 +115,19 @@ export function FacilityListView({
 
   return (
     <>
-      <div className="mt-[18px] flex flex-wrap items-center gap-2">
-        <FacilitySearch value={keyword} onChange={changeKeyword} />
-      </div>
-
       {/*
-        데스크탑: [지역][시군구]  n곳 ······ [정렬]  한 줄
-        모바일: 지역이 한 줄을 채우고, 결과 수와 정렬이 그 아래 좌우로 — 정렬이 혼자 떨어지지 않게
+        데스크탑: [지역][시군구] [검색 ······] [n곳] [정렬]  한 줄 — 지역으로 좁히고 그 안에서 검색하는 순서
+        모바일: 지역 / 검색 / (결과 수 ······ 정렬) 세 줄
       */}
-      <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="mt-[18px] flex flex-col gap-2 lg:flex-row lg:items-center">
         <RegionFilter facilities={facilities} value={region} onChange={changeRegion} />
+        <FacilitySearch value={keyword} onChange={changeKeyword} />
 
-        <div className="flex items-center justify-between gap-2 sm:contents">
-          <span className="text-[13px] font-semibold text-text-tertiary">
-            {isFiltered ? (
-              <>
-                <span className="text-text">{matched.length}곳</span>
-                <span className="text-text-disabled"> / {facilities.length}곳</span>
-              </>
-            ) : (
-              `${matched.length}곳`
-            )}
+        <div className="flex items-center justify-between gap-3 lg:contents">
+          <span className="shrink-0 text-[13px] font-semibold whitespace-nowrap text-text-tertiary">
+            {isFiltered ? <span className="text-text">{matched.length}곳</span> : `${matched.length}곳`}
           </span>
-          <div className="sm:ml-auto">
-            <SortSelect value={sort} onChange={changeSort} />
-          </div>
+          <SortSelect value={sort} onChange={changeSort} />
         </div>
       </div>
 

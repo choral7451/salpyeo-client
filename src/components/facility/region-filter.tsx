@@ -53,7 +53,7 @@ function Select({
   options: [string, number][];
 }) {
   return (
-    <label className="relative flex h-11 min-w-0 flex-1 items-center gap-1 rounded-full border border-line bg-surface pr-7 pl-4 text-sm font-semibold text-text-secondary sm:h-9 sm:flex-none">
+    <label className="relative flex h-11 min-w-0 flex-1 items-center gap-1 rounded-full border border-line bg-surface pr-7 pl-4 text-sm font-semibold text-text-secondary lg:h-9 lg:flex-none">
       <span className="sr-only">{label}</span>
       <select
         value={value}
@@ -91,7 +91,7 @@ export function RegionFilter({
 
   return (
     // 모바일에서는 두 칸이 화면을 반씩 나눠 쓴다 (시도만 있으면 전체 너비)
-    <div role="group" aria-label="지역 선택" className="flex flex-1 gap-2 sm:flex-none">
+    <div role="group" aria-label="지역 선택" className="flex flex-1 gap-2 lg:flex-none">
       <Select
         label="시도"
         value={value.sido}

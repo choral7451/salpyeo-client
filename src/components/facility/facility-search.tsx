@@ -13,7 +13,7 @@ export function FacilitySearch({
   placeholder?: string;
 }) {
   return (
-    <div className="relative flex min-w-[240px] flex-1 items-center">
+    <div className="relative flex h-11 min-w-[220px] flex-1 items-center lg:h-9">
       <Search
         size={15}
         strokeWidth={2.5}
@@ -26,7 +26,7 @@ export function FacilitySearch({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label="시설 검색"
-        className="w-full rounded-full border border-line bg-surface py-2 pr-9 pl-9 text-sm text-text outline-none transition-colors placeholder:text-text-muted focus:border-primary"
+        className="h-full w-full rounded-full border border-line bg-surface pr-9 pl-9 text-sm text-text outline-none transition-[border-color] placeholder:text-text-muted focus:border-primary"
       />
       {value ? (
         <button
