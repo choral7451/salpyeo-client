@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Toaster } from "sonner";
 
 import { StoreHydrator } from "@/components/common/store-hydrator";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { getVerticals } from "@/lib/api/facilities";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { GA_MEASUREMENT_ID, SITE_NAME, SITE_URL } from "@/lib/site";
 
 import "./globals.css";
 
@@ -81,6 +82,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </main>
         <Footer />
         <Toaster position="bottom-center" richColors closeButton />
+        {/* 하이드레이션 후에 불러온다 — 첫 렌더를 막지 않는다 */}
+        {GA_MEASUREMENT_ID ? <GoogleAnalytics gaId={GA_MEASUREMENT_ID} /> : null}
       </body>
     </html>
   );
