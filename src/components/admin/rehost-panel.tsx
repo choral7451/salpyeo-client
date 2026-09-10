@@ -7,8 +7,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { rehostFacilityImages } from "@/lib/api/admin";
 
-/** 한 번에 처리할 시설 수 — 서버 상한과 같다 */
-const BATCH = 10;
+/**
+ * 한 번에 처리할 시설 수 — 서버 기본값과 같다.
+ * 운영 컨테이너가 0.8 코어·768MB 를 네 서비스와 나눠 쓰므로 작게 끊어 부담을 줄인다.
+ */
+const BATCH = 2;
 
 /**
  * 조리원 홈페이지 사진을 우리 S3 로 옮긴다.
@@ -35,6 +38,9 @@ export function RehostPanel({ onDone }: { onDone?: () => void }) {
         // 남은 시설이 없거나, 이번 회차에 아무것도 못 옮겼으면 멈춘다 (전부 실패하는 상황에서 무한 반복 방지)
         if (result.remaining === 0 || result.facilities === 0 || result.moved === 0) break;
         if (stopped.current) break;
+
+        // 서버가 다른 서비스와 자원을 나눠 쓰므로 회차 사이에도 잠깐 쉰다
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
       toast.success(`사진 ${moved}장을 S3 로 옮겼습니다${failed ? ` (실패 ${failed}장은 원래 주소 유지)` : ""}`);
       onDone?.();
@@ -55,7 +61,7 @@ export function RehostPanel({ onDone }: { onDone?: () => void }) {
       <p className="text-[12px] text-text-secondary">
         {progress
           ? `옮김 ${progress.moved}장 · 실패 ${progress.failed}장 · 남은 시설 ${progress.remaining}곳`
-          : "조리원 홈페이지에서 불러오던 사진을 우리 서버로 옮깁니다. 오래 걸리니 창을 닫지 마세요."}
+          : "조리원 홈페이지에서 불러오던 사진을 우리 서버로 옮깁니다. 다른 서비스와 서버를 나눠 쓰므로 천천히 진행합니다 — 수십 분 걸리고, 창을 닫으면 멈춥니다."}
       </p>
     </div>
   );
