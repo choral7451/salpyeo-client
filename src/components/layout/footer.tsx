@@ -8,8 +8,8 @@ export function Footer() {
       <div className="container-page flex flex-wrap items-center gap-4 py-7 text-[13px] text-text-disabled">
         <span className="text-[15px] font-extrabold text-text-muted">살펴</span>
         <span>
-          가격·평가 정보 출처: 보건복지부, 건보공단, e하늘, 아이사랑, 나이스
-          (법정 공개 데이터)
+          요금 정보 출처: 보건복지부 전국 산후조리원 현황 (법정 공개 데이터) ·
+          사진과 연락처는 각 시설 공식 홈페이지
         </span>
         <Link
           href={routes.inquiry()}
