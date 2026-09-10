@@ -8,6 +8,7 @@ import { ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminGate } from "@/components/admin/admin-gate";
+import { ImageLightbox } from "@/components/common/image-lightbox";
 import { NumberField, RowList, TextField } from "@/components/admin/field";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,6 +67,8 @@ function AdminFacilityEditor() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  /** 크게 보기 중인 사진 순번 (null 이면 닫힘) */
+  const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -283,14 +286,22 @@ function AdminFacilityEditor() {
             renderRow={(row, updateRow) => (
               <>
                 {row.url ? (
-                  <Image
-                    src={row.url}
-                    alt=""
-                    width={56}
-                    height={42}
-                    unoptimized
-                    className="h-[42px] w-14 shrink-0 rounded-md border border-hairline object-cover"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setZoomedIndex(draft.images.indexOf(row))}
+                    aria-label={`${row.alt || "사진"} 크게 보기`}
+                    title="클릭하면 크게 봅니다"
+                    className="shrink-0 cursor-zoom-in rounded-md border border-hairline transition-opacity hover:opacity-80 focus-visible:ring-3 focus-visible:ring-primary/30 focus-visible:outline-none"
+                  >
+                    <Image
+                      src={row.url}
+                      alt=""
+                      width={56}
+                      height={42}
+                      unoptimized
+                      className="h-[42px] w-14 rounded-md object-cover"
+                    />
+                  </button>
                 ) : null}
                 <input
                   aria-label="이미지 URL"
@@ -339,6 +350,17 @@ function AdminFacilityEditor() {
           </label>
           <p className="text-xs text-text-muted">끄면 목록·상세에서 사라집니다 (관리자 목록에는 남습니다)</p>
         </section>
+
+        {zoomedIndex !== null && draft.images[zoomedIndex] ? (
+          <ImageLightbox
+            images={draft.images}
+            index={zoomedIndex}
+            title={draft.name}
+            unoptimized
+            onIndexChange={setZoomedIndex}
+            onClose={() => setZoomedIndex(null)}
+          />
+        ) : null}
 
         <div className="sticky bottom-4 flex items-center justify-end gap-3 rounded-2xl border border-hairline bg-surface/95 p-4 backdrop-blur">
           {dirty ? <span className="mr-auto text-sm text-text-secondary">저장하지 않은 변경이 있습니다</span> : null}

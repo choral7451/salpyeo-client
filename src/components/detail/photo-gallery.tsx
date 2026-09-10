@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Expand } from "lucide-react";
+import { useCallback, useState } from "react";
 
+import { ImageLightbox } from "@/components/common/image-lightbox";
 import { Thumbnail } from "@/components/common/thumbnail";
 import { cn } from "@/lib/utils";
 import type { FacilityImage } from "@/types/facility";
@@ -29,23 +30,6 @@ export function PhotoGallery({
     (delta: number) => setIndex((i) => (i + delta + images.length) % images.length),
     [images.length],
   );
-
-  // 확대 상태에서는 방향키로 넘기고 ESC 로 닫는다. 배경 스크롤은 막는다.
-  useEffect(() => {
-    if (!zoomed) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setZoomed(false);
-      if (e.key === "ArrowLeft") go(-1);
-      if (e.key === "ArrowRight") go(1);
-    };
-    document.addEventListener("keydown", onKey);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [zoomed, go]);
 
   if (images.length === 0) {
     return <Thumbnail className={cn("h-[260px] w-full", className)} label="시설 사진" />;
@@ -130,51 +114,13 @@ export function PhotoGallery({
       ) : null}
 
       {zoomed ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${name} 사진 크게 보기`}
-          onClick={() => setZoomed(false)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-dark/95 p-4 backdrop-blur-sm"
-        >
-          {/* 사진은 원본 비율 그대로 보여 준다 (잘라내지 않음) */}
-          <div
-            className="relative h-full w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Image
-              key={current.url}
-              src={current.url}
-              alt={`${name} ${current.alt}`}
-              fill
-              sizes="100vw"
-              className="object-contain"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setZoomed(false)}
-            aria-label="닫기"
-            autoFocus
-            className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-          >
-            <X size={20} strokeWidth={2.5} aria-hidden />
-          </button>
-
-          {images.length > 1 ? (
-            <>
-              <ZoomNav side="left" onClick={() => go(-1)} />
-              <ZoomNav side="right" onClick={() => go(1)} />
-              <div className="pointer-events-none absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white">
-                <span>{current.alt}</span>
-                <span className="tabular text-white/70">
-                  {index + 1} / {images.length}
-                </span>
-              </div>
-            </>
-          ) : null}
-        </div>
+        <ImageLightbox
+          images={images}
+          index={index}
+          title={name}
+          onIndexChange={setIndex}
+          onClose={() => setZoomed(false)}
+        />
       ) : null}
     </div>
   );
@@ -193,26 +139,6 @@ function NavButton({ side, onClick }: { side: "left" | "right"; onClick: () => v
       )}
     >
       <Icon size={18} strokeWidth={2.5} aria-hidden />
-    </button>
-  );
-}
-
-function ZoomNav({ side, onClick }: { side: "left" | "right"; onClick: () => void }) {
-  const Icon = side === "left" ? ChevronLeft : ChevronRight;
-  return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-      aria-label={side === "left" ? "이전 사진" : "다음 사진"}
-      className={cn(
-        "absolute top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20",
-        side === "left" ? "left-4" : "right-4",
-      )}
-    >
-      <Icon size={24} strokeWidth={2.5} aria-hidden />
     </button>
   );
 }
